@@ -27,12 +27,11 @@ public class BankTransactionProducerTest {
 
     private BankTransactionProducer bankTransactionProducer = new BankTransactionProducer();
     private MockProducer<String, BankTransaction> mockProducer;
-    private ObjectMapper mapper = new ObjectMapper();
     private String[] customers = new String[]{"John", "Thomas", "Ketul", "Jacob", "Bhumika", "Vipul"};
 
     @Before
     public void setUp() throws Exception {
-        mockProducer = new MockProducer<>(true, new StringSerializer(), new BankTransactionSerializer(mapper));
+        mockProducer = new MockProducer<>(true, new StringSerializer(), new BankTransactionSerializer());
     }
 
     @Test

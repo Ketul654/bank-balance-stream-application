@@ -2,11 +2,32 @@
 
 ## About
 
-This has a few stream applications for different purposes i.e to calculate occurrence of same words from a stream of sentences, what colour is favourite for how many users from a stream of userid and colour, total remaining balance for different users from a stream of transactions etc. More details on how to run these streams are provided in java docs of those streams.
+This is a stream application to calculate/find total remaining balance, last transaction time and total number of transactions so far for different users from a stream of transactions.
 
-This is developed in Java 8 and Kafka Stream 2.7.0 
+This is developed in Java 8 and Kafka Stream 2.7.0
 
-Kafka cluster is prerequisite to run these applications. Follow ```Kafka Cluster Setup``` section to set it up.
+Code coverage : class - 88%, methods - 94%, lines - 86% 
+
+You can find unit test cases for stream topology and kafka producer.
+
+## How to run
+
+1. Kafka cluster is prerequisite to run this application. Follow ```Kafka Cluster Setup``` section to set it up.
+
+2. Create input and output topics
+   bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic bank-transactions
+   bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic bank-balances --config cleanup.policy=compact
+
+3. Start console consumer on input and output topics
+   bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic bank-transactions --from-beginning --property print.key=true --property print.value=true
+   bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic bank-balances --from-beginning --property print.key=true --property print.value=true
+   
+4. Make sure you configure producer and consumer to achieve exactly once semantics otherwise it will end up calculating wrong bank balance due to duplication.
+   i.e. Make producer idempotent and configure processing.guarantee to exactly_once for stream application
+
+5. Start BankTransactionProducer to produce random bank transactions for 6 users to bank-transactions topic
+
+6. Start BankBalanceStreamApplication to calculate total balance, total number of transactions and latest transaction time and publish it to output topic bank-balances
 
 ## Kafka Cluster Setup
 
@@ -75,42 +96,3 @@ Kafka cluster is prerequisite to run these applications. Follow ```Kafka Cluster
   WatchedEvent state:SyncConnected type:None path:null
   [0, 1, 2]
   ```
-  
-## Kafka Topics
-
-* Create input and output topics
-  ```$xslt
-  bin/kafka-topics.sh --create \
-    --zookeeper localhost:2181 \
-    --replication-factor 1 \
-    --partitions 3 \
-    --topic word-count-input
-  
-  bin/kafka-topics.sh --create \
-    --zookeeper localhost:2181 \
-    --replication-factor 1 \
-    --partitions 3 \
-    --topic word-count-output
-  ``` 
-  
-## Kafka Console Producer
-
-* Start console producer to produce message on input topic 
-  ```$xslt
-  bin/kafka-console-producer.sh --broker-list localhost:9092 --topic word-count-input
-  ```  
-  
-## Kafka Console Consumer
-
-* Start console consumer to consume messages from output topic
-
-  ```$xslt
-  bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 \
-    --topic word-count-output \
-    --from-beginning \
-    --formatter kafka.tools.DefaultMessageFormatter \
-    --property print.key=true \
-    --property print.value=true \
-    --property key.deserializer=org.apache.kafka.common.serialization.StringDeserializer \
-    --property value.deserializer=org.apache.kafka.common.serialization.LongDeserializer
-  ```   

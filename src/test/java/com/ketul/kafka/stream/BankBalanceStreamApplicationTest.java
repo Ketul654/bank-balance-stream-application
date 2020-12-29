@@ -1,6 +1,5 @@
 package com.ketul.kafka.stream;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ketul.kafka.message.BankBalance;
 import com.ketul.kafka.message.BankTransaction;
 import com.ketul.kafka.serde.BankBalanceDeserializer;
@@ -28,9 +27,8 @@ public class BankBalanceStreamApplicationTest {
     private TopologyTestDriver topologyTestDriver;
     private TestInputTopic<String,BankTransaction> inputTopic;
     private TestOutputTopic<String,BankBalance> outputTopic;
-    private ObjectMapper mapper = new ObjectMapper();
-    private Serde<BankTransaction> bankTransactionSerde = Serdes.serdeFrom(new BankTransactionSerializer(mapper), new BankTransactionDeserializer(mapper));
-    private Serde<BankBalance> bankBalanceSerde = Serdes.serdeFrom(new BankBalanceSerializer(mapper), new BankBalanceDeserializer(mapper));
+    private Serde<BankTransaction> bankTransactionSerde = Serdes.serdeFrom(new BankTransactionSerializer(), new BankTransactionDeserializer());
+    private Serde<BankBalance> bankBalanceSerde = Serdes.serdeFrom(new BankBalanceSerializer(), new BankBalanceDeserializer());
 
     @Before
     public void setUp() throws Exception {

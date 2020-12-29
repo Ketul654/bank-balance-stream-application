@@ -26,31 +26,33 @@ public class BankTransactionProducer {
     }
 
     private static void produceTransactions(Producer<String, BankTransaction> producer, boolean produceContinuously) {
-        if (produceContinuously)
-            while (true)
-                sendMessages(producer);
-        else
-            sendMessages(producer);
-    }
-
-    private static void sendMessages(Producer<String, BankTransaction> producer) {
-        String[] customers = new String[]{"John", "Thomas", "Ketul", "Jacob", "Bhumika", "Vipul"};
-
-        Random random = new Random();
         try {
-            for (int i = 0; i < 10000; i++) {
-                String customer = customers[random.nextInt(customers.length)];
-                float amount = new Random().nextFloat() * (999 - 1) + 1;
-                BankTransaction bankTransaction = new BankTransaction(customer, amount, Instant.now());
-                LOGGER.info(bankTransaction.toString());
-                producer.send(new ProducerRecord<>(StreamConstants.BANK_TRANSACTIONS_TOPIC, customer, new BankTransaction(customer, amount, Instant.now())));
-            }
-            Thread.sleep(1);
+            if (produceContinuously)
+                while (true) {
+                    sendMessages(producer);
+                }
+            else
+                sendMessages(producer);
         } catch (Exception e) {
             LOGGER.error("Exception occurred while producing messages : ", e);
         } finally {
             producer.close();
         }
+    }
+
+    private static void sendMessages(Producer<String, BankTransaction> producer) throws InterruptedException {
+        String[] customers = new String[]{"John", "Thomas", "Ketul", "Jacob", "Bhumika", "Vipul"};
+
+        Random random = new Random();
+        for (int i = 0; i < 10000; i++) {
+            String customer = customers[random.nextInt(customers.length)];
+            float amount = new Random().nextFloat() * (999 - 1) + 1;
+            BankTransaction bankTransaction = new BankTransaction(customer, amount, Instant.now());
+            LOGGER.info(bankTransaction.toString());
+            producer.send(new ProducerRecord<>(StreamConstants.BANK_TRANSACTIONS_TOPIC, customer, new BankTransaction(customer, amount, Instant.now())));
+        }
+        Thread.sleep(1000);
+
     }
 
     private static Properties getProducerProperties() {

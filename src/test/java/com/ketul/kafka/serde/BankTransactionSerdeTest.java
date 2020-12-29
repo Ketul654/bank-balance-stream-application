@@ -12,9 +12,8 @@ import java.util.Map;
 
 public class BankTransactionSerdeTest {
 
-    private ObjectMapper mapper = new ObjectMapper();
-    private BankTransactionSerializer serializer = new BankTransactionSerializer(mapper);
-    private BankTransactionDeserializer deserializer = new BankTransactionDeserializer(mapper);
+    private BankTransactionSerializer serializer = new BankTransactionSerializer();
+    private BankTransactionDeserializer deserializer = new BankTransactionDeserializer();
     private Map config = Mockito.mock(Map.class);
     private String topic = "topic-0";
 

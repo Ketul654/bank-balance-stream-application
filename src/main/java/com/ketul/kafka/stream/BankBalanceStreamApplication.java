@@ -1,6 +1,5 @@
 package com.ketul.kafka.stream;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ketul.kafka.message.BankBalance;
 import com.ketul.kafka.message.BankTransaction;
 import com.ketul.kafka.serde.BankBalanceDeserializer;
@@ -54,8 +53,7 @@ public class BankBalanceStreamApplication {
     }
 
     private static Topology createTopology() {
-        ObjectMapper mapper = new ObjectMapper();
-        Serde<BankTransaction> bankTransactionSerdes = Serdes.serdeFrom(new BankTransactionSerializer(mapper), new BankTransactionDeserializer(mapper));
+        Serde<BankTransaction> bankTransactionSerdes = Serdes.serdeFrom(new BankTransactionSerializer(), new BankTransactionDeserializer());
         StreamsBuilder builder = new StreamsBuilder();
         KStream<String, BankTransaction> bankTransactionKStream = builder.stream(StreamConstants.BANK_TRANSACTIONS_TOPIC,
                 Consumed.with(
@@ -63,7 +61,7 @@ public class BankBalanceStreamApplication {
                         bankTransactionSerdes
                 ));
 
-        Serde bankBalanceSerdes = Serdes.serdeFrom(new BankBalanceSerializer(mapper), new BankBalanceDeserializer(mapper));
+        Serde bankBalanceSerdes = Serdes.serdeFrom(new BankBalanceSerializer(), new BankBalanceDeserializer());
 
         KTable<String, BankBalance> bankBalanceKTable =  bankTransactionKStream.groupByKey().aggregate(
                 () -> new BankBalance(0, Instant.ofEpochMilli(0L), 0),
