@@ -84,7 +84,7 @@ public class BankBalanceStreamApplication {
 
     private static Properties getStreamProperties() {
         Properties properties = new Properties();
-        properties.put(StreamsConfig.APPLICATION_ID_CONFIG, StreamConstants.FAVOURITE_COLOUR_APPLICATION_ID);
+        properties.put(StreamsConfig.APPLICATION_ID_CONFIG, StreamConstants.BANK_BALANCE_APPLICATION_ID);
         properties.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, StreamConstants.BOOTSTRAP_SERVERS);
         properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, StreamConstants.AUTO_OFFSET_RESET_EARLIEST);
 
