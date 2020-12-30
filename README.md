@@ -15,12 +15,16 @@ You can find unit test cases for stream topology and kafka producer.
 1. Kafka cluster is prerequisite to run this application. Follow ```Kafka Cluster Setup``` section to set it up.
 
 2. Create input and output topics
+   ```
    bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic bank-transactions
    bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic bank-balances --config cleanup.policy=compact
-
+   ```
+   
 3. Start console consumer on input and output topics
+   ```
    bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic bank-transactions --from-beginning --property print.key=true --property print.value=true
    bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic bank-balances --from-beginning --property print.key=true --property print.value=true
+   ```
    
 4. Make sure you configure producer and consumer to achieve exactly once semantics otherwise it will end up calculating wrong bank balance due to duplication.
    i.e. Make producer idempotent and configure processing.guarantee to exactly_once for stream application
