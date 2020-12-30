@@ -49,7 +49,7 @@ public class BankTransactionProducer {
             float amount = new Random().nextFloat() * (999 - 1) + 1;
             BankTransaction bankTransaction = new BankTransaction(customer, amount, Instant.now());
             LOGGER.info(bankTransaction.toString());
-            producer.send(new ProducerRecord<>(StreamConstants.BANK_TRANSACTIONS_TOPIC, customer, new BankTransaction(customer, amount, Instant.now())));
+            producer.send(new ProducerRecord<>(StreamConstants.BANK_TRANSACTIONS_TOPIC, bankTransaction.getName(), bankTransaction));
         }
         Thread.sleep(1000);
 
